@@ -1,0 +1,28 @@
+{
+  "name": "portfolio-client",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://mudigondapranay.github.io/portfolio",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist/public"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+    // include other frontend dependencies here...
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.2",
+    "vite": "^5.4.19",
+    "gh-pages": "^6.0.0",
+    "tailwindcss": "^3.4.17",
+    "postcss": "^8.4.47",
+    "autoprefixer": "^10.4.20"
+    // include other frontend dev deps like typescript, etc.
+  }
+}
