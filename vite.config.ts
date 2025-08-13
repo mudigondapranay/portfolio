@@ -4,6 +4,7 @@ import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
 export default defineConfig({
+  base: "/portfolio/",  // <-- Add this for GitHub Pages repo subpath
   plugins: [
     react(),
     runtimeErrorOverlay(),
@@ -18,6 +19,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      // Consider verifying if import.meta.dirname works, otherwise use:
+      // path.resolve(path.dirname(new URL(import.meta.url).pathname), "client", "src"),
       "@": path.resolve(import.meta.dirname, "client", "src"),
       "@shared": path.resolve(import.meta.dirname, "shared"),
       "@assets": path.resolve(import.meta.dirname, "attached_assets"),
