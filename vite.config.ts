@@ -3,38 +3,39 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
-export default defineConfig({
-  base: "/portfolio/",  // <-- Add this for GitHub Pages repo subpath
-  plugins: [
+// Export async config to allow dynamic imports safely
+export default defineConfig(async () => {
+  const plugins = [
     react(),
     runtimeErrorOverlay(),
-    ...(process.env.NODE_ENV !== "production" &&
-    process.env.REPL_ID !== undefined
-      ? [
-          await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer(),
-          ),
-        ]
-      : []),
-  ],
-  resolve: {
-    alias: {
-      // Consider verifying if import.meta.dirname works, otherwise use:
-      // path.resolve(path.dirname(new URL(import.meta.url).pathname), "client", "src"),
-      "@": path.resolve(import.meta.dirname, "client", "src"),
-      "@shared": path.resolve(import.meta.dirname, "shared"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets"),
+  ];
+
+  // Only load cartographer plugin in non-production Replit environments
+  if (process.env.NODE_ENV !== "production" && process.env.REPL_ID) {
+    const { cartographer } = await import("@replit/vite-plugin-cartographer");
+    plugins.push(cartographer());
+  }
+
+  return {
+    base: "/portfolio/", // ✅ needed for GitHub Pages to load assets correctly
+    plugins,
+    resolve: {
+      alias: {
+        "@": path.resolve(path.dirname(new URL(import.meta.url).pathname), "client", "src"),
+        "@shared": path.resolve(path.dirname(new URL(import.meta.url).pathname), "shared"),
+        "@assets": path.resolve(path.dirname(new URL(import.meta.url).pathname), "attached_assets"),
+      },
     },
-  },
-  root: path.resolve(import.meta.dirname, "client"),
-  build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
-    emptyOutDir: true,
-  },
-  server: {
-    fs: {
-      strict: true,
-      deny: ["**/.*"],
+    root: path.resolve(path.dirname(new URL(import.meta.url).pathname), "client"),
+    build: {
+      outDir: path.resolve(path.dirname(new URL(import.meta.url).pathname), "dist/public"),
+      emptyOutDir: true,
     },
-  },
+    server: {
+      fs: {
+        strict: true,
+        deny: ["**/.*"],
+      },
+    },
+  };
 });
