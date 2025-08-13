@@ -1,7 +1,8 @@
 {
-  "homepage": "https://mudigondapranay.github.io/portfolio",
   "name": "rest-express",
   "version": "1.0.0",
+  "private": true,
+  "homepage": "https://mudigondapranay.github.io/portfolio",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -9,7 +10,9 @@
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "start": "cross-env NODE_ENV=production tsx server/index.ts",
     "check": "tsc",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist/public"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
