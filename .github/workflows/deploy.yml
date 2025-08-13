@@ -3,7 +3,7 @@ name: Deploy Vite site to GitHub Pages
 on:
   push:
     branches:
-      - main  # or your default branch
+      - main
   workflow_dispatch:
 
 permissions:
@@ -33,7 +33,6 @@ jobs:
 
       - name: Build Vite site
         run: npm run build
-        # vite.config.ts already outputs to dist/public
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
