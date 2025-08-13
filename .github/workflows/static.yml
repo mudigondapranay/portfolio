@@ -1,43 +1,61 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy static frontend to GitHub Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # Runs on pushes to main branch
   push:
     branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
+  # Allow manual trigger from Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# Keep only one deployment running at a time
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      # 1. Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
+
+      # 2. Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Build the React frontend (Vite)
+      - name: Build frontend
+        run: npm run build
+        # Vite config outputs to dist/public
+
+      # 5. Setup GitHub Pages
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
+      # 6. Upload only built static files
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          path: dist/public
+
+      # 7. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
